@@ -8,6 +8,7 @@ import nodemailer from "nodemailer";
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.static(__dirname));
 
 const PORT = 3000;
 let correo = "";
@@ -37,6 +38,10 @@ const transporter = nodemailer.createTransport({
     user: "pascualfernandez@turiscool.com",
     pass: "rojw dody pzwq afgk",
   },
+});
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/index.html");
 });
 
 app.post("/send-signed-pdf", upload.single("pdf"), async (req, res) => {
