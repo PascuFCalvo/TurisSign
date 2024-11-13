@@ -10,7 +10,6 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -170,5 +169,5 @@ app.delete("/delete", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Servidor proxy ejecutándose en http://localhost:${PORT}`);
+  console.log(`Servidor proxy ejecutándose en ${PORT}`);
 });

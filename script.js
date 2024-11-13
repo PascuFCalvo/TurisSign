@@ -274,7 +274,7 @@ async function generarPDFConFirma(previsualizar = false) {
 
 async function eliminarUsuario() {
   const email = emailInput.value;
-  const response = await fetch("http://localhost:3000/delete", {
+  const response = await fetch(`${baseurl}/delete`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -298,7 +298,7 @@ const enviarPDF = async (pdfBlob) => {
   formData.append("nombre", $nombre.value);
   formData.append("dni", $dni.value);
 
-  const response = await fetch("http://localhost:3000/send-signed-pdf", {
+  const response = await fetch(`${baseurl}/send-signed-pdf`, {
     method: "POST",
     body: formData,
   });
