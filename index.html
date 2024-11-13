@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Firmar PDF</title>
+    <link rel="stylesheet" href="./estilo.css" />
+  </head>
+  <body>
+    <div id="emailForm" class="container">
+      <img
+        src="https://www.fundae.es/ResourcePackages/Fundae/assets/dist/images/logo_fundae.svg"
+        alt="Logo"
+      />
+      <img
+        src="https://turiscool.com/wp-content/uploads/2022/09/Recurso-6.svg"
+        alt="Logo"
+        style="margin-bottom: 100px"
+      />
+      <p style="text-wrap: pretty; margin-bottom: 50px">
+        Has completado tu formación
+        <span style="font-weight: bold">FUNDE</span>,ahora vamos a proceder a la
+        firma del certificado que lo acredita.
+      </p>
+      <br />
+      <h2>Ingresa tu correo para continuar:</h2>
+      <input type="text" id="email" placeholder="Introduce tu email" />
+      <button id="sendEmail">VAMOS</button>
+      <p id="errorMsg" class="error-msg" style="display: none; color: red">
+        Correo no encontrado en la base de datos.
+      </p>
+      <p id="loadingMsg" class="loading-msg">
+        Cargando,espera un momento...<span class="loader"></span>
+      </p>
+    </div>
+
+    <div id="firmaSection" class="container-firma" style="display: none">
+      <h2 id="welcomeMsg" style="color: #006791">Bienvenido</h2>
+      <h3>Instrucciones para Completar el Documento</h3>
+
+      <div class="instruccionesPC">
+        <p>
+          No necesitas hacer nada directamente en el documento.
+          <strong>Solo debes rellenar los campos</strong> que se encuentran en
+          la sección más abajo, y el documento se completará automáticamente con
+          la información que proporciones.
+        </p>
+        <br />
+        <p>
+          Además, puedes
+          <strong>previsualizar el documento tantas veces como desees</strong>
+          para asegurarte de que la firma y los datos estén en el lugar
+          correcto.
+        </p>
+        <br />
+        <p>¡Es un proceso fácil y automático!</p>
+      </div>
+
+      <div class="instruccionesMovil">
+        <p>
+          Desliza hata abajo, rellana tu nombre y DNI y dale a
+          <strong>FIRMAR</strong> para completar el proceso
+        </p>
+      </div>
+
+      <iframe
+        id="previewIframe"
+        style="display: none"
+        width="100%"
+        height="600"
+      ></iframe>
+      <div class="buttons">
+        <button id="btnLimpiarFirma">Limpiar Firma</button>
+        <button id="btnPrevisualizarPDF">Previsualizar PDF</button>
+        <button id="btnGuardarPDF">FIRMAR</button>
+      </div>
+
+      <div class="form-fields">
+        <div class="form-fields-container">
+          <label
+            ><h3>Nombre</h3>
+            <input type="text" id="nombre" placeholder="Ingrese su nombre"
+          /></label>
+          <label
+            ><h3>DNI/NIF/NIE</h3>
+            <input type="text" id="dni" placeholder="Ingrese su DNI"
+          /></label>
+        </div>
+        <div class="canvas-field-container">
+          <h3>Firma:</h3>
+          <canvas id="firmaCanvas"></canvas>
+        </div>
+      </div>
+      <img
+        src="https://www.fundae.es/ResourcePackages/Fundae/assets/dist/images/logo_fundae.svg"
+        alt="Logo"
+        style="margin-top: 100px; width: 100px; margin-right: 20px"
+      />
+      <img
+        src="https://turiscool.com/wp-content/uploads/2022/09/Recurso-6.svg"
+        alt="Logo"
+        style="width: 100px"
+      />
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
