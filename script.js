@@ -290,10 +290,6 @@ async function eliminarUsuario() {
   }
 }
 
-btnUploadCSV.addEventListener("click", () => {
-  uploadCSV();
-});
-
 // Enviar el PDF por correo
 const enviarPDF = async (pdfBlob) => {
   const formData = new FormData();
