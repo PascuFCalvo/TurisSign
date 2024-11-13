@@ -9,6 +9,8 @@ const firmaSection = document.getElementById("firmaSection");
 const welcomeMsg = document.getElementById("welcomeMsg");
 const loadingMsg = document.getElementById("loadingMsg");
 
+const baseurl = "http://34.175.101.232:3000";
+
 const $firmaCanvas = document.querySelector("#firmaCanvas"),
   $btnLimpiarFirma = document.querySelector("#btnLimpiarFirma"),
   $btnGuardarPDF = document.querySelector("#btnGuardarPDF"),
@@ -29,7 +31,7 @@ submit.addEventListener("click", async () => {
   firmaSection.style.display = "none";
 
   try {
-    const response = await fetch("http://localhost:3000/send-email", {
+    const response = await fetch(`${baseurl}/send-email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,7 +51,7 @@ submit.addEventListener("click", async () => {
       welcomeMsg.innerText = `Bienvenido, ${email}`;
       welcomeMsg.style.display = "block";
 
-      const downloadResponse = await fetch("http://localhost:3000/download");
+      const downloadResponse = await fetch(`${baseurl}/download`);
 
       const contentType = downloadResponse.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
