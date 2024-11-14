@@ -9,7 +9,8 @@ const firmaSection = document.getElementById("firmaSection");
 const welcomeMsg = document.getElementById("welcomeMsg");
 const loadingMsg = document.getElementById("loadingMsg");
 
-const baseurl = "http://34.175.101.232:3000";
+const baseurl = "http://localhost:3000";
+let currentUserData = {};
 
 const $firmaCanvas = document.querySelector("#firmaCanvas"),
   $btnLimpiarFirma = document.querySelector("#btnLimpiarFirma"),
@@ -50,6 +51,7 @@ submit.addEventListener("click", async () => {
     if (result.message === "Correo recibido correctamente") {
       welcomeMsg.innerText = `Bienvenido, ${email}`;
       welcomeMsg.style.display = "block";
+      getUserData();
 
       const downloadResponse = await fetch(`${baseurl}/download`);
 
@@ -267,7 +269,7 @@ async function generarPDFConFirma(previsualizar = false) {
     enviarPDF(blob); // Enviar el PDF por correo
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `documento-firmado-${nombre}-${dni}-${Date.now()}.pdf`;
+    link.download = `documento-firmado-${nombre}-${dni}-${currentUserData.urlRecibiDiploma}-${currentUserData.Curso}}.pdf`;
     link.click();
   }
 }
@@ -297,6 +299,8 @@ const enviarPDF = async (pdfBlob) => {
   formData.append("email", emailInput.value);
   formData.append("nombre", $nombre.value);
   formData.append("dni", $dni.value);
+  formData.append("urlRecibiDiploma", currentUserData.urlRecibiDiploma);
+  formData.append("Curso", currentUserData.Curso);
 
   const response = await fetch(`${baseurl}/send-signed-pdf`, {
     method: "POST",
@@ -311,6 +315,17 @@ const enviarPDF = async (pdfBlob) => {
   }
   eliminarUsuario();
 };
+
+async function getUserData() {
+  const response = await fetch(`${baseurl}/get-user-data`);
+  if (response.ok) {
+    const result = await response.json();
+    currentUserData = result;
+    console.log("Datos del usuario:", currentUserData);
+    console.log(currentUserData.urlRecibiDiploma);
+    localStorage.setItem("userData", JSON.stringify(result));
+  }
+}
 
 $btnPrevisualizarPDF.addEventListener("click", () => {
   generarPDFConFirma(true);

@@ -40,8 +40,8 @@ const upload = multer({ storage });
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "pascualfernandez@turiscool.com",
-    pass: "rojw dody pzwq afgk",
+    user: "certificadosturiscool@gmail.com",
+    pass: "rlaf aytu eswa ocgu",
   },
 });
 
@@ -51,9 +51,10 @@ app.get("/", (req, res) => {
 
 app.post("/send-signed-pdf", upload.single("pdf"), async (req, res) => {
   const pdfBuffer = req.file?.buffer;
-  const correo = req.body.email;
   const nombre = req.body.nombre;
   const dni = req.body.dni;
+  const urlRecibiDiploma = req.body.urlRecibiDiploma;
+  const Curso = req.body.Curso;
 
   if (!pdfBuffer) {
     return res.status(400).json({ message: "Email o archivo PDF faltante" });
@@ -61,13 +62,13 @@ app.post("/send-signed-pdf", upload.single("pdf"), async (req, res) => {
 
   try {
     const mailOptions = {
-      from: "pascualfernandez@turiscool.com",
-      to: "mariacolin@turiscool.com , pascual.fernandez.calvo@gmail.com, ana@turiscool.com",
-      subject: `Diploma Fundae firmado ${nombre} ${dni}.pdf`,
+      from: "certificadosturiscool@gmail.com",
+      to: "certificadosturiscool@gmail.com",
+      subject: `Diploma Fundae firmado ${nombre} ${dni} ${urlRecibiDiploma} ${Curso}.pdf`,
       text: `Adjunto se encuentra el diploma FUNDAE del alumno ${nombre}`,
       attachments: [
         {
-          filename: `Diploma Fundae-${nombre}-${dni}.pdf`,
+          filename: `Diploma Fundae-${nombre}-${dni}-${urlRecibiDiploma}-${Curso}.pdf`,
           content: pdfBuffer,
           contentType: "application/pdf",
         },
@@ -91,6 +92,26 @@ app.post("/send-email", (req, res) => {
   correo = email;
   console.log("Correo recibido:", email);
   res.status(200).json({ message: "Correo recibido correctamente" });
+});
+
+app.get("/get-user-data", (req, res) => {
+  connection.query(
+    `SELECT * FROM usuarios WHERE correo = ?`,
+    [correo],
+    (err, result) => {
+      if (err) {
+        console.error("Error consultando MySQL:", err.message);
+        return res.status(500).send("Error en la consulta a la base de datos");
+      }
+
+      if (result.length === 0) {
+        console.error("Correo no encontrado en la base de datos");
+        return res.status(404).send("Correo no encontrado en la base de datos");
+      }
+
+      res.status(200).json(result[0]);
+    }
+  );
 });
 
 app.get("/download", async (req, res) => {
