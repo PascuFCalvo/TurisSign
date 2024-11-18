@@ -9,7 +9,7 @@ const firmaSection = document.getElementById("firmaSection");
 const welcomeMsg = document.getElementById("welcomeMsg");
 const loadingMsg = document.getElementById("loadingMsg");
 
-const baseurl = "http://localhost:3000";
+const baseurl = "http://34.175.101.232:3000";
 let currentUserData = {};
 
 const $firmaCanvas = document.querySelector("#firmaCanvas"),
