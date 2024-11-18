@@ -24,6 +24,7 @@ const connection = mysql.createConnection({
   user: "admin",
   password: "1234",
   database: "usuarios",
+  charset: "utf8_general_ci", // Configura un charset estándar
 });
 
 connection.connect((err) => {
@@ -50,6 +51,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/send-signed-pdf", upload.single("pdf"), async (req, res) => {
+  const actualyear = new Date().getFullYear();
   const pdfBuffer = req.file?.buffer;
   const nombre = req.body.nombre;
   const dni = req.body.dni;
@@ -64,11 +66,11 @@ app.post("/send-signed-pdf", upload.single("pdf"), async (req, res) => {
     const mailOptions = {
       from: "certificadosturiscool@gmail.com",
       to: "certificadosturiscool@gmail.com",
-      subject: `Diploma Fundae firmado ${nombre} ${dni} ${urlRecibiDiploma} ${Curso}.pdf`,
+      subject: `Diploma Fundae firmado ${nombre} ${dni} ${urlRecibiDiploma} ${Curso} ${actualyear}.pdf`,
       text: `Adjunto se encuentra el diploma FUNDAE del alumno ${nombre}`,
       attachments: [
         {
-          filename: `Diploma Fundae-${nombre}-${dni}-${urlRecibiDiploma}-${Curso}.pdf`,
+          filename: `Diploma Fundae-${nombre}-${dni}-${urlRecibiDiploma}-${Curso}/${actualyear}.pdf`,
           content: pdfBuffer,
           contentType: "application/pdf",
         },
@@ -189,6 +191,8 @@ app.delete("/delete", (req, res) => {
   );
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Servidor proxy ejecutándose en ${PORT}`);
 });
+
+export { app, server };

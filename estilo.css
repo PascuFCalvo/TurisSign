@@ -299,10 +299,13 @@ button:disabled {
   }
 
   #btnLimpiarFirma,
-  #btnPrevisualizarPDF,
   #btnGuardarPDF {
-    width: 30%;
+    width: 45%;
     margin: 10px 0;
+  }
+
+  #btnPrevisualizarPDF {
+    display: none;
   }
 
   .form-fields-container {

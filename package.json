@@ -17,6 +17,14 @@
   },
   "type": "module",
   "scripts": {
-    "start": "nodemon proxy.js"
+    "start": "nodemon proxy.js",
+    "test": "node --experimental-vm-modules ./node_modules/.bin/jest"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
   }
 }
