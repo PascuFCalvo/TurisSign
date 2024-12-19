@@ -97,7 +97,7 @@ async function loadPdfFromUrl(url) {
 // Renderizar el PDF en el iframe
 async function renderPDF() {
   const pdfPage = await pdfDoc.getPage(pageNumber);
-  const viewport = pdfPage.getViewport({ scale: 1 });
+  const viewport = pdfPage.getViewport({ scale: 2 });
   const canvas = document.createElement("canvas");
   canvas.width = viewport.width;
   canvas.height = viewport.height;
@@ -192,11 +192,12 @@ async function generarPDFConFirma(previsualizar = false) {
   }
 
   const pdfPage = await pdfDoc.getPage(pageNumber);
-  const viewport = pdfPage.getViewport({ scale: 1 });
+  const viewport = pdfPage.getViewport({ scale: 3 });
   const pdfWidth = viewport.width;
   const pdfHeight = viewport.height;
 
   const outputCanvas = document.createElement("canvas");
+
   outputCanvas.width = pdfWidth;
   outputCanvas.height = pdfHeight;
   const outputContext = outputCanvas.getContext("2d");
@@ -209,32 +210,44 @@ async function generarPDFConFirma(previsualizar = false) {
   firmaImg.src = firmaImgData;
   await firmaImg.decode();
 
-  outputContext.drawImage(firmaImg, 400, pdfHeight - 300, 150, 75);
-  outputContext.drawImage(firmaImg, pdfWidth - 220, pdfHeight - 550, 150, 75);
+  outputContext.drawImage(
+    firmaImg,
+    400 * 3,
+    pdfHeight - 280 * 3,
+    150 * 2,
+    75 * 2
+  );
+  outputContext.drawImage(
+    firmaImg,
+    pdfWidth - 220 * 3,
+    pdfHeight - 550 * 3,
+    150 * 3,
+    70 * 3
+  );
 
   const date = new Date();
   const formattedDate = `${date.getDate()}-${
     date.getMonth() + 1
   }-${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
 
-  outputContext.font = "12px Arial";
+  outputContext.font = "30px Arial";
   outputContext.fillStyle = "black";
-  outputContext.fillText(` ${nombre}`, 120, pdfHeight - 625);
-  outputContext.fillText(` ${dni}`, 450, pdfHeight - 625);
-  outputContext.fillText(` ${nombre}`, pdfWidth - 500, pdfHeight - 260);
-  outputContext.fillText(` ${dni}`, pdfWidth - 320, pdfHeight - 260);
+  outputContext.fillText(` ${nombre}`, 120 * 3, pdfHeight - 625 * 3);
+  outputContext.fillText(` ${dni}`, 450 * 3, pdfHeight - 625 * 3);
+  outputContext.fillText(` ${nombre}`, pdfWidth - 500 * 3, pdfHeight - 260 * 3);
+  outputContext.fillText(` ${dni}`, pdfWidth - 320 * 3, pdfHeight - 260 * 3);
 
-  outputContext.font = "8px Arial";
+  outputContext.font = "20px Arial";
   outputContext.fillStyle = "gray";
-  outputContext.fillText(` ${formattedDate}`, 370, pdfHeight - 270);
-  outputContext.fillText(` ${dni}`, 370, pdfHeight - 260);
-  outputContext.fillText(` ${nombre}`, 370, pdfHeight - 250);
+  outputContext.fillText(` ${formattedDate}`, 370 * 3, pdfHeight - 270 * 3);
+  outputContext.fillText(` ${dni}`, 370 * 3, pdfHeight - 260 * 3);
+  outputContext.fillText(` ${nombre}`, 370 * 3, pdfHeight - 250 * 3);
 
-  outputContext.font = "8px Arial";
+  outputContext.font = "20px Arial";
   outputContext.fillStyle = "gray";
-  outputContext.fillText(` ${formattedDate}`, 370, pdfHeight - 520);
-  outputContext.fillText(` ${dni}`, 370, pdfHeight - 510);
-  outputContext.fillText(` ${nombre}`, 370, pdfHeight - 500);
+  outputContext.fillText(` ${formattedDate}`, 370 * 3, pdfHeight - 520 * 3);
+  outputContext.fillText(` ${dni}`, 370 * 3, pdfHeight - 510 * 3);
+  outputContext.fillText(` ${nombre}`, 370 * 3, pdfHeight - 500 * 3);
 
   const imgDataUrl = outputCanvas.toDataURL("image/png");
   const imgBytes = await fetch(imgDataUrl).then((res) => res.arrayBuffer());
@@ -266,7 +279,7 @@ async function generarPDFConFirma(previsualizar = false) {
       $previewIframe.style.display = "block";
     }
   } else {
-    enviarPDF(blob); // Enviar el PDF por correo
+    await enviarPDF(blob); // Enviar el PDF por correo
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `documento-firmado-${nombre}-${dni}-${currentUserData.urlRecibiDiploma}-${currentUserData.Curso}}.pdf`;
@@ -293,6 +306,8 @@ async function eliminarUsuario() {
 }
 
 // Enviar el PDF por correo
+let enviado = false; // Inicializar variable
+
 const enviarPDF = async (pdfBlob) => {
   const formData = new FormData();
   formData.append("pdf", pdfBlob);
@@ -302,18 +317,33 @@ const enviarPDF = async (pdfBlob) => {
   formData.append("urlRecibiDiploma", currentUserData.urlRecibiDiploma);
   formData.append("Curso", currentUserData.Curso);
 
-  const response = await fetch(`${baseurl}/send-signed-pdf`, {
-    method: "POST",
-    body: formData,
-  });
+  try {
+    const response = await fetch(`${baseurl}/send-signed-pdf`, {
+      method: "POST",
+      body: formData,
+    });
 
-  if (response.ok) {
-    const result = await response.json();
-    if (result.message === "Correo enviado correctamente") {
-      alert("PDF firmado enviado correctamente por correo electrónico.");
+    if (response.ok) {
+      const result = await response.json();
+      if (result.message === "Correo enviado correctamente") {
+        alert("PDF firmado enviado correctamente por correo electrónico.");
+        enviado = true; // Cambiar el estado a true solo si se envió correctamente
+      }
+    } else {
+      throw new Error("Error al enviar el correo.");
     }
+  } catch (error) {
+    console.error("Error al enviar el PDF:", error);
+    alert("Hubo un problema al enviar el correo electrónico.");
   }
-  eliminarUsuario();
+
+  if (enviado) {
+    eliminarUsuario(); // Solo se elimina si el correo fue enviado
+  } else {
+    console.warn(
+      "El usuario no puede ser eliminado porque el correo no se envió."
+    );
+  }
 };
 
 async function getUserData() {
@@ -334,3 +364,4 @@ $btnPrevisualizarPDF.addEventListener("click", () => {
 $btnGuardarPDF.addEventListener("click", () => {
   generarPDFConFirma(false);
 });
+//
